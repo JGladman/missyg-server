@@ -1,0 +1,24 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "App.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "node-env-run App.js --exec nodemon | pino-colada"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-pino-logger": "^5.0.0",
+    "pino": "^6.10.0"
+  },
+  "devDependencies": {
+    "node-env-run": "^4.0.2",
+    "nodemon": "^2.0.7",
+    "pino-colada": "^2.1.0"
+  }
+}
