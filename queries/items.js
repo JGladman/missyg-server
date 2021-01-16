@@ -1,93 +1,86 @@
-const mysql = require('mysql')
+const mysql = require('mysql');
 
-const uuid = require('uuid')
+const uuid = require('uuid');
 
-const config = require('./index').config
+const pool = require('../index').pool;
 
 const getItems = (req, res) => {
-  const connection = mysql.createConnection(config)
-
-  const items = []
-
-  connection.query('SELECT * FROM items', (err, result, fields) => {
-    if (err) throw err
-    res.send(result)
-  })
-
-  connection.end()
-}
+  pool.getConnection((err, conn) => {
+    conn.query('SELECT * FROM items', (err, result, fields) => {
+      if (err) throw err;
+      res.send(result);
+      conn.release();
+    });
+  });
+};
 
 const getItemById = (req, res) => {
-  const { id } = req.body
+  const { id } = req.body;
 
-  const connection = mysql.createConnection(config)
-
-  connection.query(
-    `SELECT * FROM items WHERE id='${id}'`,
-    (err, result, fields) => {
-      if (err) throw err
-      res.send(result)
-    },
-  )
-
-  connection.end()
-}
+  pool.getConnection((err, conn) => {
+    conn.query(
+      `SELECT * FROM items WHERE id='${id}'`,
+      (err, result, fields) => {
+        if (err) throw err;
+        res.send(result);
+        conn.release();
+      },
+    );
+  });
+};
 
 const addItem = (req, res) => {
-  const { name } = req.body
-  const id = uuid.v4()
+  const { name } = req.body;
+  const id = uuid.v4();
 
-  const connection = mysql.createConnection(config)
-
-  connection.query(
-    `INSERT INTO items (id, name) VALUES ("${id}", "${name}")`,
-    (err, result, fields) => {
-      if (err) throw err
-      res.send(result)
-    },
-  )
-
-  connection.end()
-}
+  pool.getConnection((err, conn) => {
+    conn.query(
+      `INSERT INTO items (id, name) VALUES ("${id}", "${name}")`,
+      (err, result, fields) => {
+        if (err) throw err;
+        res.send(result);
+        conn.release();
+      },
+    );
+  });
+};
 
 const updateItem = (req, res) => {
-  const { id, name } = req.body
+  const { id, name } = req.body;
 
-  const connection = mysql.createConnection(config)
-
-  connection.query(
-    `
+  pool.getConnection((err, conn) => {
+    conn.query(
+      `
         UPDATE items
         SET name='${name}'
         WHERE id='${id}';
-    `,
-    (err, result, fields) => {
-      if (err) throw err
-      res.send(result)
-    },
-  )
-
-  connection.end()
-}
+      `,
+      (err, result, fields) => {
+        if (err) throw err;
+        res.send(result);
+        conn.release();
+      },
+    );
+  });
+};
 
 const deleteItem = (req, res) => {
-  const { id } = req.body
+  const { id } = req.body;
 
-  const connection = mysql.createConnection(config)
-
-  connection.query(
-    `
+  pool.getConnection((err, conn) => {
+    conn.query(
+      `
         DELETE FROM items
         WHERE id='${id}';
-    `,
-    (err, result, fields) => {
-      if (err) throw err
-      res.send(result)
-    },
-  )
-
-  connection.end()
-}
+      `,
+      (err, result, fields) => {
+        if (err) throw err;
+        res.send(result);
+        conn.release();
+      },
+    );
+  });
+};
 
 module.exports = {
   getItems,
@@ -95,4 +88,4 @@ module.exports = {
   addItem,
   updateItem,
   deleteItem,
-}
+};
