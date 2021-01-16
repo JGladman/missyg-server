@@ -3,7 +3,6 @@ const mysql = require('mysql')
 const express = require('express')
 const bodyParser = require('body-parser')
 const pino = require('express-pino-logger')()
-const axios = require('axios')
 const cors = require('cors')
 
 const items = require('./queries/items')
