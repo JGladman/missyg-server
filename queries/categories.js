@@ -9,8 +9,7 @@ const getCategories = (req, res) => {
 };
 
 const getCategoryById = (req, res) => {
-  const { id } = req.body;
-  const query = `SELECT * FROM categories WHERE id='${id}'`;
+  const query = `SELECT * FROM categories WHERE id='${req.body.id}'`;
   makeQuery(query, res);
 };
 
