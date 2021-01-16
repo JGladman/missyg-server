@@ -1,8 +1,6 @@
-const mysql = require('mysql');
-
 const uuid = require('uuid');
 
-const trailingComma = require('./shared').trailingComma;
+const updateQueryBuilder = require('./shared').updateQueryBuilder;
 const makeQuery = require('./shared').makeQuery;
 
 const getCategories = (req, res) => {
@@ -24,32 +22,16 @@ const addCategory = (req, res) => {
 };
 
 const updateCategory = (req, res) => {
-  let numFields = 0;
-
-  Object.keys(req.body).forEach((key) => {
-    if (key !== 'id') numFields++;
-  });
-
-  console.log('NUM FIELDS: ' + numFields);
-
-  if (numFields === 0) throw new Error('ERROR: Must update at least one value');
-
   const { id, title, count } = req.body;
 
   if (!id) throw new Error('ERROR: ID must be defined');
 
-  let query = `UPDATE categories SET `;
-
-  if (title) {
-    query += `title='${title}'`;
-    [numFields, query] = trailingComma(numFields, query);
-    console.log('NUM FIELDS: ' + numFields);
-  }
-  if (count) {
-    query += `count='${count}'`;
-    [numFields, query] = trailingComma(numFields, query);
-  }
-  query += ` WHERE id='${id}';`;
+  const query = updateQueryBuilder(
+    req,
+    id,
+    { title: title, count: count },
+    'categories',
+  );
 
   makeQuery(query, res);
 };
